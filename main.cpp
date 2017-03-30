@@ -1,4 +1,5 @@
 #include <iostream>
+#include <memory>
 #include <fstream>
 using namespace std;
 
@@ -9,18 +10,18 @@ private:
     int weight;
     unsigned char c;
 public:
-    tree* parent;
-    tree* left; //left son 
-    tree* right; //right son
-    tree* brother; //right brother
-    tree() {uroven=1; weight=0; c=char(0); parent=NULL; left=NULL; right=NULL; brother=NULL;}
-    tree(int u, int w,unsigned char ch, tree* p, tree* l, tree* r, tree* b) {uroven=u; weight=w; c=ch; parent=p; left=l; right=r; brother=b;}
+    shared_ptr< tree > parent;
+    shared_ptr< tree > left; //left son 
+    shared_ptr< tree > right; //right son
+    shared_ptr< tree > brother; //right brother
+    tree() {uroven=1; weight=0; c=char(0); /*parent=NULL; left=NULL; right=NULL; brother=NULL;*/}
+    tree(int u, int w,unsigned char ch, shared_ptr< tree > p, shared_ptr< tree > l, shared_ptr< tree > r, shared_ptr< tree > b) {uroven=u; weight=w; c=ch; parent=p; left=l; right=r; brother=b;}
     bool operator<(tree t);
     bool operator<=(tree t);
     friend ostream &operator<<(ostream &stream, tree t);
     int getWeight(){return weight;}
     int getUroven() {return uroven;}
-    void setParent(tree* p){parent=p;}
+    void setParent(shared_ptr< tree > p){parent=p;}
 };
 
 bool tree::operator<(tree t)
@@ -65,32 +66,35 @@ int main(int argc, char** argv)
             break;
         stat[c]++;
     }   
-    tree* uk;
-    tree* bro=NULL;
+    shared_ptr< tree > uk;
+    shared_ptr< tree > bro;
     for(i=255; i>=0; i--)
     {
-        //if(stat[i]>0)
-        //{
+        if(stat[i]>0)
+        {
         cout<<i<<' '<<char(i)<<' '<<stat[i]<<endl;
-        uk=new tree(1, stat[i], char(i), NULL, NULL, NULL, bro);
+        uk=shared_ptr< tree >(new tree(1, stat[i], char(i), shared_ptr< tree >(),  shared_ptr< tree >(),  shared_ptr< tree >(), bro));
         bro=uk;
-        //}
+        }
     }
-    tree* zap; //zapasnoi ukazatel
-    tree* beg=uk;
-    tree* min1, *min2;
-    int koko=0; //sheet;
+    shared_ptr< tree > zap; //zapasnoi ukazatel
+    shared_ptr< tree > beg=uk;
+    shared_ptr< tree > min1, min2;
+    cout<<"balak";
     while(1) //building tree
     {
-        if(beg->brother==NULL)
+    cout<<"vikkk";
+        if(!beg->brother)
+        {
             break;
+        }
         min1=beg;
         uk=beg;
         while(1)
         {
-            if(uk->brother==NULL)
+            if(uk->brother)
                 break;
-            if(*uk->brother<*min1)
+            if(*(uk->brother.get())<*(min1.get()))
             {
                 min1=uk->brother;    
             }
@@ -103,23 +107,23 @@ int main(int argc, char** argv)
             min2=beg;
         while(1)
         {
-            if(uk->brother==NULL)
+            if(!uk->brother)
                 break;
             if(uk->brother!=min1)
             {
-                if(*uk->brother<*min2)
+                if(*(uk->brother.get())<*(min2.get()))
                 {
                     min2=uk->brother;    
                 }
             }
             uk=uk->brother;
         }
-        cout<<"min1 "<<*min1<<"min2"<<' '<<*min2<<endl;
+        cout<<"min1 "<<*(min1.get())<<"min2"<<' '<<*(min2.get())<<endl;
         uk=beg;
         if(beg==min1)
         {
-            cout<<"Объединили вначале "<<*min1<<' '<<*min2<<endl;
-            zap=new tree(min1->getUroven()+min2->getUroven(), min1->getWeight()+min2->getWeight(), char(0), NULL, min1, min2, beg->brother);
+            cout<<"Объединили вначале "<<*(min1.get())<<' '<<*(min2.get())<<endl;
+            zap=shared_ptr< tree > (new tree(min1->getUroven()+min2->getUroven(), min1->getWeight()+min2->getWeight(), char(0), shared_ptr< tree > (), min1, min2, beg->brother));
             beg=zap;
             min1->setParent(zap);
             min2->setParent(zap);
@@ -131,10 +135,11 @@ int main(int argc, char** argv)
             while(uk->brother!=min1)
             {
                 uk=uk->brother;
-                cout<<*uk<<endl;
+                cout<<*(uk.get())<<endl;
             }
-            cout<<"Не в начале "<<*min1<<' '<<*min2<<endl;
-            zap=new tree(min1->getUroven()+min2->getUroven(), min1->getWeight()+min2->getWeight(), char(0), NULL, min1, min2, uk->brother->brother);
+            cout<<"Не в начале "<<*(min1.get())<<' '<<*(min2.get())<<endl;
+            zap=shared_ptr< tree > (new tree(min1->getUroven()+min2->getUroven(), min1->getWeight()+min2->getWeight(), 
+                                    char(0), shared_ptr< tree >(), min1, min2, uk->brother->brother));
             uk->brother=zap;
             min1->setParent(zap);
             min2->setParent(zap);
@@ -149,14 +154,14 @@ int main(int argc, char** argv)
         uk=beg;
         while(1)
         {
-            if(uk==NULL)
+            if(!uk)
                 break;
-            cout<<*uk<<endl;
+            cout<<*(uk.get())<<endl;
             uk=uk->brother;        
         }
     }
     uk=beg;
-    while(1)
+    /*while(1)
     {
         if()    
     }//write uahaha
