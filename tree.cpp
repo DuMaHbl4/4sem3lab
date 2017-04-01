@@ -18,7 +18,7 @@ bool tree::operator<=(tree t)
 
 ostream &operator<<(ostream &stream, tree t)
 {
-    stream<<t.c<<' '<<t.weight;
+    stream<<(int)t.c<<' '<<t.weight;
     return stream;
 }
 

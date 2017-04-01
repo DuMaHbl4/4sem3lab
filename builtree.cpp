@@ -13,7 +13,7 @@ tree* buildtree(uint32_t* stat)
     {
         //if(stat[i]>0)
         //{
-        cout<<i<<' '<<char(i)<<' '<<stat[i]<<endl;
+        //cout<<i<<' '<<char(i)<<' '<<stat[i]<<endl;
         uk=shared_ptr< tree >(new tree(1, stat[i], char(i), shared_ptr< tree >(),  shared_ptr< tree >(),  shared_ptr< tree >(), bro));
         bro=uk;
         //}
@@ -30,6 +30,7 @@ tree* buildtree(uint32_t* stat)
         }
         min1=beg;
         uk=beg;
+        cout<<*(uk.get())<<endl;
         while(1)
         {
             if(!uk->brother)
@@ -39,6 +40,7 @@ tree* buildtree(uint32_t* stat)
                 min1=uk->brother;    
             }
             uk=uk->brother;    
+            cout<<*(uk.get())<<endl;
         }
         uk=beg;
         if(min1==beg)
@@ -58,7 +60,7 @@ tree* buildtree(uint32_t* stat)
             }
             uk=uk->brother;
         }
-        cout<<"min1 "<<*(min1.get())<<"min2"<<' '<<*(min2.get())<<endl;
+        //cout<<"min1 "<<*(min1.get())<<"min2"<<' '<<*(min2.get())<<endl;
         uk=beg;
         if(beg==min1)
         {
@@ -75,7 +77,7 @@ tree* buildtree(uint32_t* stat)
             while(uk->brother!=min1)
             {
                 uk=uk->brother;
-                cout<<*(uk.get())<<endl;
+                //cout<<*(uk.get())<<endl;
             }
             cout<<"Не в начале "<<*(min1.get())<<' '<<*(min2.get())<<endl;
             zap=shared_ptr< tree > (new tree(min1->getUroven()+min2->getUroven(), min1->getWeight()+min2->getWeight(), 
@@ -85,20 +87,27 @@ tree* buildtree(uint32_t* stat)
             min2->setParent(zap);
 
             uk=beg;    
-        }    
-        while(uk->brother!=min2)
+        }
+        if(min2==beg)
         {
-            uk=uk->brother;
+            beg=beg->brother;
+        }   
+        else
+        { 
+            while(uk->brother!=min2)
+            {
+                uk=uk->brother;
+            }
         }
         uk->brother=uk->brother->brother;
         uk=beg;
-        while(1)
+        /*while(1)
         {
             if(!uk)
                 break;
             cout<<*(uk.get())<<endl;
             uk=uk->brother;        
-        }
+        }*/
     }
     return beg.get();
 }

@@ -1,7 +1,7 @@
 #ifndef RECODER_H
 #define RECODER_H
 
-#include <ostream>
+#include <iostream>
 
 class recoder
 {
@@ -9,6 +9,7 @@ class recoder
     std::ostream *out;	//поток
     unsigned char buf;	//буфер
 public:
+    int las;
     void attach(std::ostream *o);
     recoder(std::ostream *o);
     void write(std::string s);
