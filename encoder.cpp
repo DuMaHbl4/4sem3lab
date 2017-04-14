@@ -16,12 +16,9 @@ int encoder::getBit()
 {
     if(num>7)
     {
-        //cout<<"Прочитал очередной байт";
         c=stream->get();
-        //cout<<"| "<<c<<" |";
         if(stream->eof())
         {
-            cout<<"kooooooooooneeeeeeeeeeeeckkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk";
             return -1;
         }
         num=0;
